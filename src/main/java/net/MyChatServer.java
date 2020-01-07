@@ -1,8 +1,6 @@
-package core;
+package net;
 
-import core.channel.AckMesChannelHandler;
-import core.channel.CmdChatChannelHandlerFactory;
-import core.channel.DealMesChannelHandler;
+import core.channel.DealMesRcvChannelHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -21,7 +19,7 @@ import java.util.concurrent.Executors;
  * @author Administrator
  * @create 2019-12-24 15:08:32
  * <p>
- *     端服务器，用于发送和接受消息
+ *     端服务器
  */
 @Slf4j
 @Data
@@ -65,7 +63,7 @@ public class MyChatServer {
                             //ChunkedWriteHandler分块写处理，文件过大会将内存撑爆
                             p.addLast("http-chunked", new ChunkedWriteHandler());
                             //请求处理
-                            p.addLast("dealMesHandle", new DealMesChannelHandler());
+                            p.addLast("dealMesHandle", new DealMesRcvChannelHandler());
                             //发送处理
                             //p.addLast("ackMesHandle", new AckMesChannelHandler());
 

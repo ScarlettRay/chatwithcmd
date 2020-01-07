@@ -12,7 +12,7 @@ import java.util.List;
  * @create 2019-12-25 14:51:36
  * <p>
  */
-public enum Operation implements DealRequest{
+public enum Operation {
 
     /**
      * 处理探测之后返回的房间信息
@@ -42,4 +42,7 @@ public enum Operation implements DealRequest{
     Operation(String operationType){
         this.OPERATION_TYPE = operationType;
     }
+
+    abstract void deal(Message message);
+
 }
