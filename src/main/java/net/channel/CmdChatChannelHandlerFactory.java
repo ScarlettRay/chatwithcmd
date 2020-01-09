@@ -1,4 +1,4 @@
-package core.channel;
+package net.channel;
 
 /**
  * @author Administrator

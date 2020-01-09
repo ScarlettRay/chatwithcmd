@@ -2,8 +2,6 @@ package core;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import util.MessageStatus;
 import util.Result;
 
@@ -12,7 +10,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * @author Administrator
+ * @author Ray
  * @create 2019-12-02 14:18:54
  * <p>cmd聊天机器人，一个ip生成一个
  */

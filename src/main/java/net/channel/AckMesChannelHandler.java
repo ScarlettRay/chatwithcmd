@@ -1,6 +1,5 @@
-package core.channel;
+package net.channel;
 
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 
 /**

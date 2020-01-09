@@ -14,9 +14,9 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 
 /**
- * @author Administrator
+ * @author Ray
  * @create 2019-12-23 15:15:48
- * <p>
+ * <p>聊天室探测器
  */
 public class ChatRoomDetector {
 

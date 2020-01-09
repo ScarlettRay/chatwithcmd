@@ -1,6 +1,6 @@
 package net;
 
-import core.channel.DealMesRcvChannelHandler;
+import net.channel.DealMesRcvChannelHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;

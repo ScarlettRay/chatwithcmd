@@ -4,42 +4,50 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import util.Message;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * @author Administrator
+ * @author Ray
  * @create 2019-12-25 14:51:36
- * <p>
+ * <p>请求操作处理类
  */
 public enum Operation {
 
     /**
-     * 处理探测之后返回的房间信息
+     * 处理探聊天室邀请消息
      */
-    JOIN("JOIN"){
+    INVITE(Signal.INVITE){
         @Override
         public void deal(Message message){
-            //JSONObject joinMes = JSON.parseObject(message.getMessage());
             ChatRoom chatRoom = JSON.parseObject(message.getMessage(),ChatRoom.class);
             synchronized (CmdChatMachine.CMD_CHAT_MACHINE){
                 CmdChatMachine.CMD_CHAT_MACHINE.setChatRoom(chatRoom);
                 CmdChatMachine.CMD_CHAT_MACHINE.setJoin(true);
                 CmdChatMachine.CMD_CHAT_MACHINE.notify();
             }
-            //返回请求加入聊天室的信息
+
         }
     },
-    DETECT("DETECT"){
+    /**
+     * 处理聊天室的探测消息
+     */
+    DETECT(Signal.DETECT){
         @Override
         public void deal(Message message) {
 
         }
+    },
+    /**
+     * 接受消息之后的返回接受成功信息
+     */
+    RCV(Signal.RCV){
+        @Override
+        void deal(Message message) {
+
+        }
     };
 
-    String OPERATION_TYPE;
+    Signal OPERATION_TYPE;
 
-    Operation(String operationType){
+    Operation(Signal operationType){
         this.OPERATION_TYPE = operationType;
     }
 
