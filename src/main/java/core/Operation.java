@@ -1,6 +1,7 @@
 package core;
 
 import com.alibaba.fastjson.JSON;
+import common.User;
 import util.Constants;
 import util.IOUtil;
 import util.Message;
@@ -27,7 +28,7 @@ public enum Operation {
             }
             //输入聊天马甲
             String input = IOUtil.input(Constants.NICK_NAME_TIP);
-            Message.setUserName(input);
+            User.CURRENT_USER.setUserName(input);
             return new Message(Status.OK,Signal.ATTEND);//将马甲提交给管理员校验，防止出现重名
         }
     },
@@ -86,7 +87,7 @@ public enum Operation {
         Message deal(Message message) {
             String nickName = message.getUserName();
             ChatRoom.CHAT_ROOM.setMyName(nickName);
-            ChatRoom.CHAT_ROOM.addIp(Message.getIp());
+            ChatRoom.CHAT_ROOM.addIp(User.CURRENT_USER.getIp());
             ChatRoom.CHAT_ROOM.setMasterIp(message.getIp());
             return null;
         }

@@ -16,22 +16,14 @@ import java.net.UnknownHostException;
 @Slf4j
 public class Message {
 
-    private static String ip;
-    private static String hostName;
+    private String ip;
+    private String hostName;
     private String message;
-    private static String userName; //聊天室的马甲
+    private String userName; //聊天室的马甲
     private Status status;   //消息状态
     private Signal signal;   //消息类型，信号位
 
-    static{
-        try {
-            InetAddress addr = InetAddress.getLocalHost();
-            ip = addr.getHostAddress();
-            hostName = addr.getHostName();
-        } catch (UnknownHostException e){
-            log.error(e.getMessage());
-        }
-    }
+
 
     public Message(String message,Signal signal){
         this.message = message;
@@ -40,17 +32,6 @@ public class Message {
 
     public Message(Status status,Signal signal){
 
-    }
-
-    public static void setUserName(String userName){
-        Message.userName = userName;
-    }
-
-    public String getUserName(){
-        return userName;
-    }
-    public static String getIp(){
-        return ip;
     }
 
 }

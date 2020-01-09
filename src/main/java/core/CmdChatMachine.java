@@ -35,7 +35,7 @@ public class CmdChatMachine implements ChatMachine{
     /**
      * 初始化UDP聊天室探测器
      */
-    private void initialize() {
+    {
         detector = new ChatRoomDetector();
     }
 
@@ -53,7 +53,7 @@ public class CmdChatMachine implements ChatMachine{
             synchronized (CMD_CHAT_MACHINE){
                 try {
                     CMD_CHAT_MACHINE.wait(5000);//等待五秒
-                    if(!CMD_CHAT_MACHINE.isJoin){
+                    if(CMD_CHAT_MACHINE.isJoin){
                         log.info("正在进入聊天室...");
                         return Result.OK;
                     }else{

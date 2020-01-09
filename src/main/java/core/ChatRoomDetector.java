@@ -27,8 +27,6 @@ public class ChatRoomDetector {
 
     private static final int BROADCAST_INT_PORT = 10234; // 不同的port对应不同的socket发送端和接收端
 
-    private MulticastSocket broadSocket;// 用于接收广播信息
-
     private DatagramSocket detecter;//UDP聊天室探测器
 
     private InetAddress broadAddress;// 广播地址
@@ -38,7 +36,6 @@ public class ChatRoomDetector {
     public ChatRoomDetector(){
         try {
             detecter = new DatagramSocket();
-            broadSocket = new MulticastSocket(BROADCAST_INT_PORT);
             broadAddress = InetAddress.getByName(BROADCAST_IP);
             helloMessage = new Message("SGVsbG8lMjFJJTIwYW0lMjBzb24u",Signal.DETECT);
         } catch (Exception e) {

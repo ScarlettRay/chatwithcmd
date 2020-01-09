@@ -13,7 +13,14 @@ public class Server {
 
     private String ip;
 
+    private String hostName;
+
     private int port;
 
+    public Server(String ip,String hostName,int port){
+        this.ip = ip;
+        this.hostName = hostName;
+        this.port = port;
+    }
 
 }
