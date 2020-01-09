@@ -6,5 +6,5 @@ package core;
  * <p> 信号位，判断具体是哪一种的请求
  */
 public enum Signal {
-    INVITE,DETECT,RCV,
+    INVITE,DETECT,MES,ATTEND,SUC,ALLOW
 }

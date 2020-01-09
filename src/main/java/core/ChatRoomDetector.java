@@ -35,12 +35,12 @@ public class ChatRoomDetector {
 
     private Message helloMessage;
 
-    public ChatRoomDetector(String ip,String hostName){
+    public ChatRoomDetector(){
         try {
             detecter = new DatagramSocket();
             broadSocket = new MulticastSocket(BROADCAST_INT_PORT);
             broadAddress = InetAddress.getByName(BROADCAST_IP);
-            helloMessage = new Message(ip,hostName,"Hello!I am son.");
+            helloMessage = new Message("SGVsbG8lMjFJJTIwYW0lMjBzb24u",Signal.DETECT);
         } catch (Exception e) {
             log.error(e.getMessage());
         }

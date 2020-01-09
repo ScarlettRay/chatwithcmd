@@ -24,10 +24,6 @@ public class CmdChatMachine implements ChatMachine{
 
     private ChatRoomDetector detector;//UDP聊天室探测器
 
-    private String ip;
-
-    private String hostName;
-
     private boolean isMaster;//是否是聊天室admin
 
     private boolean isJoin;//是否已经加入聊天室
@@ -39,15 +35,8 @@ public class CmdChatMachine implements ChatMachine{
     /**
      * 初始化UDP聊天室探测器
      */
-    private void initialize(){
-        try {
-            InetAddress addr = InetAddress.getLocalHost();
-            ip = addr.getHostAddress();
-            hostName = addr.getHostName();
-            detector = new ChatRoomDetector(ip,hostName);
-        } catch (UnknownHostException e){
-            log.error(e.getMessage());
-        }
+    private void initialize() {
+        detector = new ChatRoomDetector();
     }
 
     /**
