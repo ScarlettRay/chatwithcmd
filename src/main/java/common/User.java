@@ -30,4 +30,16 @@ public class User {
             log.error(e.getMessage());
         }
     }
+
+    public String getIp(){
+        return server.getIp();
+    }
+
+    public int getPort(){
+        return server.getPort();
+    }
+
+    public String getHostName(){
+        return server.getHostName();
+    }
 }

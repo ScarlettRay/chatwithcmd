@@ -8,6 +8,7 @@ import util.Message;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
+import java.net.InetAddress;
 import java.net.MulticastSocket;
 
 /**
@@ -18,13 +19,19 @@ import java.net.MulticastSocket;
 @Slf4j
 public class NewUserListener implements Runnable{
 
+    private static final String BROADCAST_IP = "230.0.0.1";// 广播IP
+
     MulticastSocket broadSocket;// 用于接收广播信息
+    InetAddress broadAddress;// 广播地址
     private static final int BROADCAST_INT_PORT = 10234; // 不同的port对应不同的socket发送端和接收端
 
     public NewUserListener(){
         // 初始化
         try {
             broadSocket = new MulticastSocket(BROADCAST_INT_PORT);
+            broadAddress = InetAddress.getByName(BROADCAST_IP);
+
+            broadSocket.joinGroup(broadAddress); // 加入到组播地址，这样就能接收到组播信息
         } catch (IOException e) {
             log.error(e.getMessage());
         }
@@ -40,7 +47,7 @@ public class NewUserListener implements Runnable{
                         inPacket.getLength());
                 Message message = JSON.parseObject(messageStr,Message.class);
 
-                if (message.getIp().equals(User.CURRENT_USER.getServer().getIp()))
+                if (message.getIp().equals(User.CURRENT_USER.getIp()))
                     continue; // 忽略自身
                 if (message.getSignal().equals(Signal.DETECT)) { //是探测信息
                     Message re = Operation.DETECT.deal(message);

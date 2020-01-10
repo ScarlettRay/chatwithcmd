@@ -1,5 +1,6 @@
 package util;
 
+import common.User;
 import core.Signal;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,8 @@ public class Message {
 
 
     public Message(String message,Signal signal){
+        this.ip = User.CURRENT_USER.getIp();
+        this.hostName = User.CURRENT_USER.getHostName();
         this.message = message;
         this.signal = signal;
     }
