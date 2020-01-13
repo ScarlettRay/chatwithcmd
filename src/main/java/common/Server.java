@@ -1,7 +1,6 @@
 package common;
 
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
 /**
  * @author Administrator

@@ -28,6 +28,10 @@ public class MyChatClient {
     private EventLoopGroup group = null;
 
     public static final MyChatClient MYCHATCLIENT = new MyChatClient();
+
+    private MyChatClient(){
+        initlize();
+    }
     /**
      * 初始化客户端
      */

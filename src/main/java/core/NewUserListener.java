@@ -25,7 +25,8 @@ public class NewUserListener implements Runnable{
     InetAddress broadAddress;// 广播地址
     private static final int BROADCAST_INT_PORT = 10234; // 不同的port对应不同的socket发送端和接收端
 
-    public NewUserListener(){
+    public
+    NewUserListener(){
         // 初始化
         try {
             broadSocket = new MulticastSocket(BROADCAST_INT_PORT);
@@ -47,7 +48,7 @@ public class NewUserListener implements Runnable{
                         inPacket.getLength());
                 Message message = JSON.parseObject(messageStr,Message.class);
 
-                if (message.getIp().equals(User.CURRENT_USER.getIp()))
+                if(false)//if (message.getIp().equals(User.CURRENT_USER.getIp())) TODO
                     continue; // 忽略自身
                 if (message.getSignal().equals(Signal.DETECT)) { //是探测信息
                     Message re = Operation.DETECT.deal(message);
