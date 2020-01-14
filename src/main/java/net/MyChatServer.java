@@ -1,5 +1,7 @@
 package net;
 
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
 import net.channel.DealMesRcvChannelHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
@@ -28,9 +30,9 @@ public class MyChatServer {
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     /** 端口号 **/
-    private int port;
+    private int port = 10234;
     /** worker 线程数**/
-    private int workerCount;  //如果是管理员，可以考虑加多线程数
+    private int workerCount = 10;  //如果是管理员，可以考虑加多线程数
     private int backlog = 1024;
     private boolean tcpNodelay = true;
     private boolean keepalive = true;
@@ -54,14 +56,17 @@ public class MyChatServer {
                             ChannelPipeline p = socketChannel.pipeline();
 
                             //HttpServerCodec: 针对http协议进行编解码
-                            p.addLast("http-codec", new HttpServerCodec());
+                            //p.addLast("http-codec", new HttpServerCodec());
                             /**
                              * 作用是将一个Http的消息组装成一个完成的HttpRequest或者HttpResponse，那么具体的是什么
                              * 取决于是请求还是响应, 该Handler必须放在HttpServerCodec后的后面
                              */
-                            p.addLast("aggregator", new HttpObjectAggregator(65536));
+                            //p.addLast("aggregator", new HttpObjectAggregator(65536));
+                            p.addLast("string-decoder",new StringDecoder());
+                            p.addLast("string-encoder",new StringEncoder());
+
                             //ChunkedWriteHandler分块写处理，文件过大会将内存撑爆
-                            p.addLast("http-chunked", new ChunkedWriteHandler());
+                            //p.addLast("http-chunked", new ChunkedWriteHandler());
                             //请求处理
                             p.addLast("dealMesHandle", new DealMesRcvChannelHandler());
                             //发送处理
@@ -69,7 +74,6 @@ public class MyChatServer {
 
                         }
                     });
-
                     ChannelFuture f = bootstrap.bind(port).sync();
 
                     if (f.isSuccess()) {

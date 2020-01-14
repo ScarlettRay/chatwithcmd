@@ -15,6 +15,6 @@ public class DealMesSendChannelHandler  extends SimpleChannelInboundHandler<Byte
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf) throws Exception {
-        log.info("消息发出");
+        log.info("接受消息:" + byteBuf.toString());
     }
 }

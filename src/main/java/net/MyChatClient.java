@@ -2,6 +2,9 @@ package net;
 
 import com.alibaba.fastjson.JSON;
 import common.Server;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
+import net.channel.ClientTestHandler;
 import net.channel.DealMesSendChannelHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
@@ -51,11 +54,12 @@ public class MyChatClient {
             @Override
             protected void initChannel(NioSocketChannel ch){
                 //字符串编码器，一定要加在SimpleClientHandler 的上面
-                ch.pipeline().addLast("http-codec", new HttpServerCodec());
-                ch.pipeline().addLast(new DelimiterBasedFrameDecoder(
-                        Integer.MAX_VALUE, Delimiters.lineDelimiter()[0]));
+                //ch.pipeline().addLast("http-codec", new HttpServerCodec());
+                ch.pipeline().addLast("string-encoder",new StringEncoder());
+                ch.pipeline().addLast("string-decoder",new StringDecoder());
                 //找到他的管道 增加他的handler
                 ch.pipeline().addLast(new DealMesSendChannelHandler());
+                ch.pipeline().addLast(new ClientTestHandler());
             }
         });
     }
