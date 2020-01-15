@@ -14,6 +14,8 @@ import io.netty.handler.stream.ChunkedWriteHandler;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -55,15 +57,8 @@ public class MyChatServer {
                                 throws Exception {
                             ChannelPipeline p = socketChannel.pipeline();
 
-                            //HttpServerCodec: 针对http协议进行编解码
-                            //p.addLast("http-codec", new HttpServerCodec());
-                            /**
-                             * 作用是将一个Http的消息组装成一个完成的HttpRequest或者HttpResponse，那么具体的是什么
-                             * 取决于是请求还是响应, 该Handler必须放在HttpServerCodec后的后面
-                             */
-                            //p.addLast("aggregator", new HttpObjectAggregator(65536));
-                            p.addLast("string-decoder",new StringDecoder());
-                            p.addLast("string-encoder",new StringEncoder());
+                            p.addLast("string-decoder",new StringDecoder(StandardCharsets.UTF_8));
+                            p.addLast("string-encoder",new StringEncoder(StandardCharsets.UTF_8));
 
                             //ChunkedWriteHandler分块写处理，文件过大会将内存撑爆
                             //p.addLast("http-chunked", new ChunkedWriteHandler());
@@ -83,6 +78,7 @@ public class MyChatServer {
                 } catch (Exception e) {
                     log.error("启动服务器报错："+e.getMessage() );
                 } finally {
+                    log.info("server shut down!");
                     boss.shutdownGracefully();
                     worker.shutdownGracefully();
                 }

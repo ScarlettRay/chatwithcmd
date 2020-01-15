@@ -17,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import util.Message;
 import util.Result;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -55,11 +57,11 @@ public class MyChatClient {
             protected void initChannel(NioSocketChannel ch){
                 //字符串编码器，一定要加在SimpleClientHandler 的上面
                 //ch.pipeline().addLast("http-codec", new HttpServerCodec());
-                ch.pipeline().addLast("string-encoder",new StringEncoder());
-                ch.pipeline().addLast("string-decoder",new StringDecoder());
+                ch.pipeline().addLast("string-encoder",new StringEncoder(StandardCharsets.UTF_8));
+                ch.pipeline().addLast("string-decoder",new StringDecoder(StandardCharsets.UTF_8));
                 //找到他的管道 增加他的handler
-                ch.pipeline().addLast(new DealMesSendChannelHandler());
-                ch.pipeline().addLast(new ClientTestHandler());
+                ch.pipeline().addLast("deal-mes-send",new DealMesSendChannelHandler());
+                ch.pipeline().addLast("client-test",new ClientTestHandler());
             }
         });
     }
@@ -75,6 +77,7 @@ public class MyChatClient {
         } catch (InterruptedException e) {
             log.error("消息发送出现异常！"+ e.getMessage());
         }finally {
+            log.info("Send message finish!");
             group.shutdownGracefully();
         }
         return Result.ERROR;
