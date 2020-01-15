@@ -18,4 +18,10 @@ public class DealMesRcvChannelHandler extends SimpleChannelInboundHandler<ByteBu
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf) throws Exception {
         log.info("接收到一条新的消息:" + byteBuf.toString());
     }
+
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        super.channelRead(ctx, msg);
+        log.info("接收到一条新的消息:" + msg.toString());
+    }
 }
