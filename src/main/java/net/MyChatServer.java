@@ -35,7 +35,7 @@ public class MyChatServer {
      * worker 线程数
      **/
     private int workerCount = 10;  //如果是管理员，可以考虑加多线程数
-    private int backlog = 128;
+    private int backlog = 1024;
     private boolean tcpNodelay = true;
     private boolean keepalive = true;
 
@@ -46,9 +46,9 @@ public class MyChatServer {
             ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap.group(boss, worker);
             bootstrap.option(ChannelOption.SO_BACKLOG, backlog); //连接数
-            //bootstrap.option(ChannelOption.TCP_NODELAY, tcpNodelay);  //不延迟，消息立即发送
-//		            bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 2000);  //超时时间
-            //bootstrap.childOption(ChannelOption.SO_KEEPALIVE, keepalive); //长连接
+            bootstrap.option(ChannelOption.TCP_NODELAY, tcpNodelay);  //不延迟，消息立即发送
+            bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 2000);  //超时时间
+            bootstrap.childOption(ChannelOption.SO_KEEPALIVE, keepalive); //长连接
             bootstrap.channel(NioServerSocketChannel.class);
             bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
                 @Override

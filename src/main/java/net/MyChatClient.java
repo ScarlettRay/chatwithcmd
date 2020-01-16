@@ -35,14 +35,19 @@ public class MyChatClient {
 
     private Server server = null;
 
+    private boolean ready = false;
+
     public static MyChatClient buildClient(Server server){
         //检查连接池中是否有指定server的客户端连接
-        return new MyChatClient(server);
+        return  new MyChatClient(server);
     }
 
     private MyChatClient(Server server){
         this.server = server;
         initlize(server);
+        //连接服务器并同步
+        new Thread(new Sync()).start();
+
     }
     /**
      * 初始化客户端
@@ -74,31 +79,46 @@ public class MyChatClient {
             }
         });
 
-        try {
-            future = client.connect(server.getIp(), server.getPort()).sync();
-        } catch (InterruptedException e) {
-            log.error("连接服务器出现异常！" + e.getMessage());
-        }
+    }
 
+    /**
+     * 同步阶段，交给另一个线程去执行
+     */
+    private class Sync implements Runnable{
+
+        @Override
+        public void run() {
+            try {
+                future = client.connect(server.getIp(), server.getPort()).sync();
+            } catch (InterruptedException e) {
+                log.error("连接服务器出现异常！" + e.getMessage());
+                e.printStackTrace();
+            }
+
+            try {
+                //当通道关闭了，就继续往下走
+                future.channel().closeFuture().sync();
+            } catch (InterruptedException e) {
+                log.error("连接断开出现异常"+ e.getMessage());
+                e.printStackTrace();
+            }finally {
+                log.info("连接断开完成!");
+                group.shutdownGracefully();
+            }
+        }
     }
 
     public Result sendMessage(Message message){
-        try {
-            future.channel().writeAndFlush(JSON.toJSON(message) + "\r\n");
-            //当通道关闭了，就继续往下走
-            future.channel().closeFuture().sync();
-            return Result.OK;
-        } catch (InterruptedException e) {
-            log.error("连接断开出现异常"+ e.getMessage());
-        }finally {
-            log.info("连接断开完成!");
-            group.shutdownGracefully();
-        }
-        return Result.ERROR;
+        future.channel().writeAndFlush(JSON.toJSON(message) + "\r\n");
+        return Result.OK;
     }
 
     public Server getServer(){
         return server;
+    }
+
+    public void setReady(){
+        this.ready = true;
     }
 
 

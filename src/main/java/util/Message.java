@@ -6,8 +6,6 @@ import core.Signal;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 /**
  * @author Ray
@@ -34,6 +32,17 @@ public class Message {
 
     public Message(Status status,Signal signal){
 
+    }
+
+    /**
+     * 构建用户消息
+     * @return
+     */
+    public static Message buildUserMessage(String message){
+        Message mes = new Message(message,Signal.MES);
+        mes.setStatus(Status.OK);
+        mes.setUserName(User.CURRENT_USER.getUserName());
+        return mes;
     }
 
 }
