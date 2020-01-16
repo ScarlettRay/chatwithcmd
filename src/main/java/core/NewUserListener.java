@@ -48,11 +48,11 @@ public class NewUserListener implements Runnable{
                         inPacket.getLength());
                 Message message = JSON.parseObject(messageStr,Message.class);
 
-                if(false)//if (message.getIp().equals(User.CURRENT_USER.getIp())) TODO
+                if(false)//if (message.getIp().equals(User.CURRENT_USER.getIp())) TODO 多机环境请修改此处
                     continue; // 忽略自身
                 if (message.getSignal().equals(Signal.DETECT)) { //是探测信息
                     Message re = Operation.DETECT.deal(message);
-                    MyChatClient.MYCHATCLIENT.sendMessage(message,User.CURRENT_USER.getServer());
+                    ClientPool.getClientFromPoolRequired(message.getServer()).sendMessage(re);
                 }
             } catch (IOException e) {
                 e.printStackTrace();

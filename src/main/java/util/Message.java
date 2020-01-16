@@ -1,5 +1,6 @@
 package util;
 
+import common.Server;
 import common.User;
 import core.Signal;
 import lombok.Data;
@@ -17,8 +18,7 @@ import java.net.UnknownHostException;
 @Slf4j
 public class Message {
 
-    private String ip;
-    private String hostName;
+    private Server server;
     private String message;
     private String userName; //聊天室的马甲
     private Status status;   //消息状态
@@ -27,8 +27,7 @@ public class Message {
 
 
     public Message(String message,Signal signal){
-        this.ip = User.CURRENT_USER.getIp();
-        this.hostName = User.CURRENT_USER.getHostName();
+        this.server = User.CURRENT_USER.getServer();
         this.message = message;
         this.signal = signal;
     }

@@ -19,7 +19,8 @@ public class ServerAndClientTest {
         server.startServer();
         Thread.sleep(5000);
         Message message = new Message("test!!", Signal.MES);
-        Result re = MyChatClient.MYCHATCLIENT.sendMessage(message, User.CURRENT_USER.getServer());
+        MyChatClient client = MyChatClient.buildClient(User.CURRENT_USER.getServer());
+        Result re =client.sendMessage(message);
         log.info("消息状态：" + re.isOK());
     }
 }

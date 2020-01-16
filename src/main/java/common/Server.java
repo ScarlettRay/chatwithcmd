@@ -2,6 +2,8 @@ package common;
 
 import lombok.Data;
 
+import java.util.Objects;
+
 /**
  * @author Administrator
  * @create 2020-01-02 17:42:04
@@ -22,4 +24,17 @@ public class Server {
         this.port = port;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Server server = (Server) o;
+        return port == server.port &&
+                Objects.equals(ip, server.ip);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ip, hostName, port);
+    }
 }

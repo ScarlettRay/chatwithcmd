@@ -74,7 +74,7 @@ public enum Operation {
                 userName += index;
             }
             //设置ip
-            ChatRoom.CHAT_ROOM.addIp(message.getIp());
+            ChatRoom.CHAT_ROOM.addIp(message.getServer().getIp());
             return new Message(userName,Signal.ALLOW);
         }
     },
@@ -88,7 +88,7 @@ public enum Operation {
             String nickName = message.getUserName();
             ChatRoom.CHAT_ROOM.setMyName(nickName);
             ChatRoom.CHAT_ROOM.addIp(User.CURRENT_USER.getIp());
-            ChatRoom.CHAT_ROOM.setMasterIp(message.getIp());
+            ChatRoom.CHAT_ROOM.setMasterIp(message.getServer().getIp());
             return null;
         }
     };
