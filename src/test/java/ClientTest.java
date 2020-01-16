@@ -26,17 +26,11 @@ public class ClientTest {
         String msg = sc.next();
         User.CURRENT_USER.setUserName(msg);
         MyChatClient client = ClientPool.getClientFromPoolRequired(User.CURRENT_USER.getServer());
-        while(){
-            .sendMessage(Message.buildUserMessage(in))
-        }
         while(sc.hasNext()){
             String in = sc.next();
-
-
+            Result re = client.sendMessage(Message.buildUserMessage(in));
             log.info("消息状态：" + re.isOK());
-        }
-
-
+       }
 
     }
 }

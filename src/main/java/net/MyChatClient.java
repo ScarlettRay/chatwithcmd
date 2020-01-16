@@ -39,7 +39,17 @@ public class MyChatClient {
 
     public static MyChatClient buildClient(Server server){
         //检查连接池中是否有指定server的客户端连接
-        return  new MyChatClient(server);
+        MyChatClient client = new MyChatClient(server);
+        //TODO 这里要怎么优化
+        while(client.future == null){
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                Thread.interrupted();
+            }
+        }
+        client.setReady();
+        return client;
     }
 
     private MyChatClient(Server server){
@@ -47,7 +57,6 @@ public class MyChatClient {
         initlize(server);
         //连接服务器并同步
         new Thread(new Sync()).start();
-
     }
     /**
      * 初始化客户端

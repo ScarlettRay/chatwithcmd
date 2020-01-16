@@ -5,6 +5,7 @@ import common.User;
 import core.Signal;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 
 
 /**
@@ -18,9 +19,10 @@ public class Message {
 
     private Server server;
     private String message;
+
+    private Signal signal;   //消息类型，信号位
     private String userName; //聊天室的马甲
     private Status status;   //消息状态
-    private Signal signal;   //消息类型，信号位
 
 
 
@@ -34,6 +36,14 @@ public class Message {
 
     }
 
+    public Message(Server server, String message, Signal signal, String userName, Status status) {
+        this.server = server;
+        this.message = message;
+        this.signal = signal;
+        this.userName = userName;
+        this.status = status;
+    }
+
     /**
      * 构建用户消息
      * @return
@@ -43,6 +53,46 @@ public class Message {
         mes.setStatus(Status.OK);
         mes.setUserName(User.CURRENT_USER.getUserName());
         return mes;
+    }
+
+    public Server getServer() {
+        return server;
+    }
+
+    public void setServer(Server server) {
+        this.server = server;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public Signal getSignal() {
+        return signal;
+    }
+
+    public void setSignal(Signal signal) {
+        this.signal = signal;
     }
 
 }

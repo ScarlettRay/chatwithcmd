@@ -14,6 +14,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -39,10 +40,13 @@ public class MyChatServer {
     private boolean tcpNodelay = true;
     private boolean keepalive = true;
 
+    private ServerBootstrap bootstrap = null;
+    private  EventLoopGroup boss = null;
+    private EventLoopGroup worker = null;
+
     public void startServer() {
-        EventLoopGroup boss = new NioEventLoopGroup();
-        EventLoopGroup worker = new NioEventLoopGroup();
-        try {
+            boss = new NioEventLoopGroup();
+            worker = new NioEventLoopGroup();
             ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap.group(boss, worker);
             bootstrap.option(ChannelOption.SO_BACKLOG, backlog); //连接数
@@ -68,18 +72,43 @@ public class MyChatServer {
                     //p.addLast("ackMesHandle", new AckMesChannelHandler());
                 }
             });
-            ChannelFuture f = bootstrap.bind(port).sync();
-
-            if (f.isSuccess()) {
-                log.info("服务器启动成功...");
+            //同步，等待子线程任务返回
+            CountDownLatch latch = new CountDownLatch(1);
+            new Thread(new Sync(latch)).start();
+            try {
+                latch.await();
+            } catch (InterruptedException e) {
+                Thread.interrupted();
             }
-            f.channel().closeFuture().sync();
-        } catch (Exception e) {
-            log.error("启动服务器报错：" + e.getMessage());
-        } finally {
-            log.info("server shut down!");
-            boss.shutdownGracefully();
-            worker.shutdownGracefully();
+
+    }
+
+    /**
+     * 同步阶段，交给另一个线程去执行
+     */
+    private class Sync implements Runnable{
+
+        CountDownLatch latch = null;
+
+        Sync(CountDownLatch latch){
+            this.latch = latch;
+        }
+
+        @Override
+        public void run() {
+            try {
+                ChannelFuture f = bootstrap.bind(port).sync();
+                if (f.isSuccess()) {
+                    log.info("服务器启动成功...");
+                }
+                f.channel().closeFuture().sync();
+            } catch (Exception e) {
+                log.error("启动服务器报错：" + e.getMessage());
+            } finally {
+                log.info("server shut down!");
+                boss.shutdownGracefully();
+                worker.shutdownGracefully();
+            }
         }
     }
 

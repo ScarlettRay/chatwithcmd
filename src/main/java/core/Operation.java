@@ -46,7 +46,7 @@ public enum Operation {
      */
     MES(Signal.MES){
         @Override
-        Message deal(Message message) {
+        public Message deal(Message message) {
             IOUtil.output(message);
             return new Message(Status.OK,Signal.SUC);
         }
@@ -56,7 +56,7 @@ public enum Operation {
      */
     SUC(Signal.SUC){
         @Override
-        Message deal(Message message) {
+        public Message deal(Message message) {
             return null;
         }
     },
@@ -66,7 +66,7 @@ public enum Operation {
      */
     ATTEND(Signal.ATTEND){
         @Override
-        Message deal(Message message) {
+        public Message deal(Message message) {
             String userName = message.getUserName();
             int index = 2;
             //设置名称
@@ -84,7 +84,7 @@ public enum Operation {
      */
     ALLOW(Signal.ALLOW){
         @Override
-        Message deal(Message message) {
+        public Message deal(Message message) {
             String nickName = message.getUserName();
             ChatRoom.CHAT_ROOM.setMyName(nickName);
             ChatRoom.CHAT_ROOM.addIp(User.CURRENT_USER.getIp());
@@ -99,6 +99,6 @@ public enum Operation {
         this.OPERATION_TYPE = operationType;
     }
 
-    abstract Message deal(Message message);
+    public abstract Message deal(Message message);
 
 }

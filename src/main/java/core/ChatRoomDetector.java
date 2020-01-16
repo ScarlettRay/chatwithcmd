@@ -48,6 +48,7 @@ public class ChatRoomDetector {
      * @return
      */
     public Result detect(){
+        log.info("正在查找局域网内是否有聊天室...");
         String message = JSONObject.toJSONString(helloMessage);
         byte[] mesByteArray = message.getBytes();
         DatagramPacket packet = new DatagramPacket(mesByteArray,mesByteArray.length, broadAddress,
