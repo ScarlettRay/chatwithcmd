@@ -1,0 +1,23 @@
+package common;
+
+import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @author Ray
+ * @create 2020-01-17 10:01:39
+ * <p>包裹消息
+ */
+@Data
+public class MessageWrapper {
+
+    private Message message;
+    private List<Server> servers = new ArrayList<>();
+
+    public MessageWrapper(Message message,Server server){
+        this.message = message;
+        this.servers.add(server);
+    }
+}

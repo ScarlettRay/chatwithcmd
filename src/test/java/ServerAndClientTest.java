@@ -3,7 +3,7 @@ import core.Signal;
 import lombok.extern.slf4j.Slf4j;
 import net.MyChatClient;
 import net.MyChatServer;
-import util.Message;
+import common.Message;
 import util.Result;
 
 /**

@@ -1,5 +1,6 @@
 package core;
 
+import common.LatchContainer;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import util.MessageStatus;
@@ -8,6 +9,7 @@ import util.Result;
 import java.net.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Ray
@@ -49,21 +51,18 @@ public class CmdChatMachine implements ChatMachine{
         if(re.isOK()){
             //发送成功,正在探测
             log.info("正在探测局域网内是否有聊天室...");
-            //同步等待唤醒
-            synchronized (CMD_CHAT_MACHINE){
-                try {
-                    CMD_CHAT_MACHINE.wait(5000);//等待五秒
-                    if(CMD_CHAT_MACHINE.isJoin){
-                        log.info("正在进入聊天室...");
-                        return Result.OK;
-                    }else{
-                        log.info("当前局域网没有聊天室...");
-                        return Result.ERROR;
-                    }
-                } catch (InterruptedException e) {
-                    log.error("attendChatRoom()抛出异常：" + e.getMessage());
-                    return new Result(e);
-                }
+            //同步等待5s,如果没有则直接打断
+            try {
+                LatchContainer.INVITE_LATCH.await(5,TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                Thread.interrupted();
+            }
+            if(CMD_CHAT_MACHINE.isJoin){
+                log.info("正在进入聊天室...");
+                return Result.OK;
+            }else{
+                log.info("当前局域网没有聊天室...");
+                return Result.ERROR;
             }
         }
         return Result.ERROR;

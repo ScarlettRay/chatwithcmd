@@ -1,10 +1,8 @@
 package core;
 
 import com.alibaba.fastjson.JSON;
-import common.User;
 import lombok.extern.slf4j.Slf4j;
-import net.MyChatClient;
-import util.Message;
+import common.Message;
 
 import java.io.IOException;
 import java.net.DatagramPacket;

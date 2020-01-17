@@ -1,12 +1,8 @@
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import common.Server;
 import common.User;
 import core.ClientPool;
-import core.Signal;
 import lombok.extern.slf4j.Slf4j;
 import net.MyChatClient;
-import util.Message;
+import common.Message;
 import util.Result;
 
 import java.util.Scanner;

@@ -1,5 +1,6 @@
 package core;
 
+import common.Server;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,11 +16,11 @@ import java.util.Set;
 @Slf4j
 public class ChatRoom {
 
-    private Set<String> ips = new HashSet<>();//聊天室内所有成员的ip;
+    private Set<Server> servers = new HashSet<>();//聊天室内所有成员的位置;
 
     private Set<String> nickNames = new HashSet<>();//聊天室内所有成员的马甲
 
-    private String masterIp;
+    private Server masterServer;
 
     private String myName;//我的入场id
 
@@ -29,10 +30,10 @@ public class ChatRoom {
 
     /**
      * 加入新的IP
-     * @param ip
+     * @param server
      */
-    public void addIp(String ip){
-        this.ips.add(ip);
+    public void addIp(Server server){
+        this.servers.add(server);
     }
 
     public boolean addNickName(String nickName){

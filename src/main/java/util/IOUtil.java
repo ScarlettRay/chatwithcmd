@@ -1,5 +1,6 @@
 package util;
 
+import common.Message;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Scanner;
@@ -12,12 +13,13 @@ import java.util.Scanner;
 @Slf4j
 public class IOUtil {
 
+    private static Scanner sc = new Scanner(System.in);
+
     /**
      * 获取输入文字
      * @param tip 输入提示文字
      */
     public static String input(String tip){
-        Scanner sc = new Scanner(System.in);
         String str = null;
         do{
             log.info(tip + ":");

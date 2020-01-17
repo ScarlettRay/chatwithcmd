@@ -1,10 +1,12 @@
 package core;
 
 import com.alibaba.fastjson.JSON;
+import common.LatchContainer;
+import common.MessageWrapper;
 import common.User;
 import util.Constants;
 import util.IOUtil;
-import util.Message;
+import common.Message;
 import util.Status;
 
 /**
@@ -19,26 +21,25 @@ public enum Operation {
      */
     INVITE(Signal.INVITE){
         @Override
-        public Message deal(Message message){
+        public MessageWrapper deal(Message message){
             ChatRoom chatRoom = JSON.parseObject(message.getMessage(),ChatRoom.class);
-            synchronized (CmdChatMachine.CMD_CHAT_MACHINE){
-                CmdChatMachine.CMD_CHAT_MACHINE.setChatRoom(chatRoom);
-                CmdChatMachine.CMD_CHAT_MACHINE.setJoin(true);
-                CmdChatMachine.CMD_CHAT_MACHINE.notify();
-            }
+            CmdChatMachine.CMD_CHAT_MACHINE.setChatRoom(chatRoom);
+            CmdChatMachine.CMD_CHAT_MACHINE.setJoin(true);
             //输入聊天马甲
             String input = IOUtil.input(Constants.NICK_NAME_TIP);
             User.CURRENT_USER.setUserName(input);
-            return new Message(Status.OK,Signal.ATTEND);//将马甲提交给管理员校验，防止出现重名
+            LatchContainer.INVITE_LATCH.countDown();//通知主线程继续执行
+            return new MessageWrapper(new Message(Status.OK,Signal.ATTEND),chatRoom.getMasterServer());//将马甲提交给管理员校验，防止出现重名
         }
     },
     /**
      * 处理聊天室的探测消息
+     * 返回当前聊天室的信息
      */
     DETECT(Signal.DETECT){
         @Override
-        public Message deal(Message message) {
-            return new Message(JSON.toJSONString(ChatRoom.CHAT_ROOM),Signal.INVITE);
+        public MessageWrapper deal(Message message) {
+            return new MessageWrapper(new Message(JSON.toJSONString(ChatRoom.CHAT_ROOM),Signal.INVITE),message.getServer());
         }
     },
     /**
@@ -46,7 +47,7 @@ public enum Operation {
      */
     MES(Signal.MES){
         @Override
-        public Message deal(Message message) {
+        public MessageWrapper deal(Message message) {
             IOUtil.output(message);
             return new Message(Status.OK,Signal.SUC);
         }
@@ -56,7 +57,7 @@ public enum Operation {
      */
     SUC(Signal.SUC){
         @Override
-        public Message deal(Message message) {
+        public MessageWrapper deal(Message message) {
             return null;
         }
     },
@@ -66,7 +67,7 @@ public enum Operation {
      */
     ATTEND(Signal.ATTEND){
         @Override
-        public Message deal(Message message) {
+        public MessageWrapper deal(Message message) {
             String userName = message.getUserName();
             int index = 2;
             //设置名称
@@ -84,12 +85,22 @@ public enum Operation {
      */
     ALLOW(Signal.ALLOW){
         @Override
-        public Message deal(Message message) {
+        public MessageWrapper deal(Message message) {
             String nickName = message.getUserName();
             ChatRoom.CHAT_ROOM.setMyName(nickName);
             ChatRoom.CHAT_ROOM.addIp(User.CURRENT_USER.getIp());
             ChatRoom.CHAT_ROOM.setMasterIp(message.getServer().getIp());
-            return null;
+            return new Message(Status.OK,Signal.ACK);
+        }
+    },
+    /**
+     * 客户机答应加入聊天室，
+     * 管理员需要给聊天室的所有人发新成员的信息
+     */
+    ACK(Signal.ACK){
+        @Override
+        public MessageWrapper deal(Message message) {
+
         }
     };
 
@@ -99,6 +110,6 @@ public enum Operation {
         this.OPERATION_TYPE = operationType;
     }
 
-    public abstract Message deal(Message message);
+    public abstract MessageWrapper deal(Message message);
 
 }

@@ -1,11 +1,9 @@
-package util;
+package common;
 
-import common.Server;
-import common.User;
 import core.Signal;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
+import util.Status;
 
 
 /**
