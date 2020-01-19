@@ -14,6 +14,6 @@ public class ClientTestHandler extends ChannelOutboundHandlerAdapter {
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         super.write(ctx, msg, promise);
-        log.info("发送消息：" + msg);
+        //log.info("发送消息：" + msg);
     }
 }

@@ -1,9 +1,9 @@
+import common.LatchContainer;
 import common.Message;
 import common.User;
 import core.ChatRoom;
 import core.ClientPool;
 import core.CmdChatMachine;
-import core.NewUserListener;
 import lombok.extern.slf4j.Slf4j;
 import net.MyChatServer;
 import util.Constants;
@@ -13,16 +13,17 @@ import util.Status;
 
 /**
  * @author Ray
- * @create 2019-12-02 14:20:35
- * <p>主类
+ * @create 2020-01-19 15:34:29
+ * <p> 调试主类
  */
 @Slf4j
-public class Main {
+public class DebuggerMain {
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         //服务器启动
-        MyChatServer server = new MyChatServer();
+        MyChatServer server = new MyChatServer(10235);
         server.startServer();
+        User.CURRENT_USER.getServer().setPort(10235);
         //CmdChatMachine.CMD_CHAT_MACHINE.
         //局域网内广播是否存在聊天室
         Result result = CmdChatMachine.CMD_CHAT_MACHINE.attendChatRoom();
@@ -34,9 +35,13 @@ public class Main {
             log.info("已为你开通一个新的聊天室...");
             String input = IOUtil.input(Constants.NICK_NAME_TIP);
             User.CURRENT_USER.setUserName(input);
-            //开启监听器
-            new Thread(new NewUserListener()).start();
             log.info("等待其他成员的加入...");
+        }else{
+            try {
+                LatchContainer.PREPARE_LATCH.await();
+            } catch (InterruptedException e) {
+                Thread.interrupted();
+            }
         }
         while(true){
             String mes = IOUtil.input("$");

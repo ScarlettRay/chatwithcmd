@@ -9,7 +9,7 @@ import lombok.Data;
  */
 public enum Status {
 
-    OK(200,"ok"),ERROR(500,"error");
+    OK(200,"ok"),ERROR(500,"error"),NEW(201,"new");
 
     private Integer code;
 

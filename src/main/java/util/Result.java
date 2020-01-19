@@ -1,10 +1,13 @@
 package util;
 
+import lombok.Data;
+
 /**
  * @author Administrator
  * @create 2019-12-23 15:20:36
  * <p>
  */
+@Data
 public class Result<T> {
 
     public static final Result OK = new Result(Status.OK);

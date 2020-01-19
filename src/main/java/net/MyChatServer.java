@@ -1,5 +1,6 @@
 package net;
 
+import common.Server;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.string.StringDecoder;
@@ -28,6 +29,12 @@ import java.util.concurrent.Executors;
 @Data
 public class MyChatServer {
 
+    public MyChatServer(int port){
+        this.port = port;
+    }
+
+    public MyChatServer(){}
+
     /**
      * 端口号
      **/
@@ -47,7 +54,7 @@ public class MyChatServer {
     public void startServer() {
             boss = new NioEventLoopGroup();
             worker = new NioEventLoopGroup();
-            ServerBootstrap bootstrap = new ServerBootstrap();
+            bootstrap = new ServerBootstrap();
             bootstrap.group(boss, worker);
             bootstrap.option(ChannelOption.SO_BACKLOG, backlog); //连接数
             bootstrap.option(ChannelOption.TCP_NODELAY, tcpNodelay);  //不延迟，消息立即发送
@@ -99,6 +106,7 @@ public class MyChatServer {
                 if (f.isSuccess()) {
                     log.info("服务器启动成功...");
                 }
+                latch.countDown();
                 f.channel().closeFuture().sync();
             } catch (Exception e) {
                 log.error("启动服务器报错：" + e.getMessage());

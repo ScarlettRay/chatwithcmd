@@ -3,12 +3,9 @@ package core;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import common.*;
-import io.netty.handler.codec.json.JsonObjectDecoder;
 import util.Constants;
 import util.IOUtil;
 import util.Status;
-
-import java.nio.charset.Charset;
 
 /**
  * @author Ray
@@ -89,10 +86,12 @@ public enum Operation {
     ALLOW(Signal.ALLOW){
         @Override
         public MessageWrapper deal(Message message) {
-            String nickName = message.getUserName();
+            String nickName = message.getMessage();
             User.CURRENT_USER.setUserName(nickName);
             ChatRoom.CHAT_ROOM.addUser(User.CURRENT_USER);
             ChatRoom.CHAT_ROOM.setMasterServer(message.getServer());
+            //允许主线程进入下一个输入消息阶段
+            LatchContainer.PREPARE_LATCH.countDown();
             return new MessageWrapper(new Message(Status.OK,Signal.ACK),message.getServer());
         }
     },

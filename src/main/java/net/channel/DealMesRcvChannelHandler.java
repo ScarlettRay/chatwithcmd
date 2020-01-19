@@ -42,6 +42,7 @@ public class DealMesRcvChannelHandler extends SimpleChannelInboundHandler<ByteBu
         Message message = JSONObject.parseObject(msg.toString(), Message.class);
         Operation op = Operation.valueOf(message.getSignal().toString());
         MessageWrapper re = op.deal(message);
+        if(re == null)return;
         //有些消息是要返回给整个聊天室的成员的或者其他成员的，需要区分
         if(re.getServers().size() == 1 && re.getServers().get(0).equals(User.CURRENT_USER.getServer())){
             //直接回写

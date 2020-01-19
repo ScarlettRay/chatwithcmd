@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import util.MessageStatus;
 import util.Result;
+import util.Status;
 
 import java.net.*;
 import java.util.concurrent.ExecutorService;
@@ -58,11 +59,11 @@ public class CmdChatMachine implements ChatMachine{
                 Thread.interrupted();
             }
             if(CMD_CHAT_MACHINE.isJoin){
-                log.info("正在进入聊天室...");
+                //log.info("正在进入聊天室...");
                 return Result.OK;
             }else{
                 log.info("当前局域网没有聊天室...");
-                return Result.ERROR;
+                return new Result(Status.NEW);
             }
         }
         return Result.ERROR;

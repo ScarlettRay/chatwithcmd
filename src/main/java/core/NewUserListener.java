@@ -24,8 +24,7 @@ public class NewUserListener implements Runnable{
     InetAddress broadAddress;// 广播地址
     private static final int BROADCAST_INT_PORT = 10234; // 不同的port对应不同的socket发送端和接收端
 
-    public
-    NewUserListener(){
+    public NewUserListener(){
         // 初始化
         try {
             broadSocket = new MulticastSocket(BROADCAST_INT_PORT);

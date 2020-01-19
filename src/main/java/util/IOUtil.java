@@ -23,7 +23,7 @@ public class IOUtil {
         String str = null;
         do{
             log.info(tip + ":");
-            str = sc.next();
+            str = sc.nextLine();
         }while (str == null || "".equals(str));
         return str;
     }

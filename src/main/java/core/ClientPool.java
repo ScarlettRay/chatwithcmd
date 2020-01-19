@@ -94,4 +94,16 @@ public class ClientPool {
         return Result.OK;
     }
 
+    /**
+     * 向聊天室里的成员发送消息
+     * @param message
+     * @return
+     */
+    public static Result sendMessageInChatRoom(Message message){
+        for (MyChatClient client : CLIENT_POOL) {
+            client.sendMessage(message);
+        }
+        return Result.OK;
+    }
+
 }

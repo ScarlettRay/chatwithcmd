@@ -11,4 +11,7 @@ public class LatchContainer {
 
     //等待邀请消息返回的闭锁
     public static final CountDownLatch INVITE_LATCH = new CountDownLatch(1);
+
+    //等待到用户可以输入消息
+    public static final CountDownLatch PREPARE_LATCH = new CountDownLatch(1);
 }
