@@ -22,10 +22,15 @@ public class User {
 
     private User(){}
 
-    {
+    public User(Server server,String userName){
+        this.server = server;
+        this.userName = userName;
+    }
+
+    static{
         try {
             InetAddress addr = InetAddress.getLocalHost();
-            server = new Server( addr.getHostAddress(),addr.getHostName(),10234);
+            CURRENT_USER.server = new Server( addr.getHostAddress(),addr.getHostName(),10234);
         } catch (UnknownHostException e){
             log.error(e.getMessage());
         }

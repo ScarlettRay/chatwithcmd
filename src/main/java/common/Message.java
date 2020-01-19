@@ -15,23 +15,27 @@ import util.Status;
 @Slf4j
 public class Message {
 
-    private Server server;
+    private Server server;    //发送消息主机信息
     private String message;
 
     private Signal signal;   //消息类型，信号位
-    private String userName; //聊天室的马甲
+    private String userName; //发消息的这个人在聊天室中的马甲
     private Status status;   //消息状态
 
 
 
     public Message(String message,Signal signal){
         this.server = User.CURRENT_USER.getServer();
+        this.userName = User.CURRENT_USER.getUserName();
         this.message = message;
         this.signal = signal;
     }
 
     public Message(Status status,Signal signal){
-
+        this.server = User.CURRENT_USER.getServer();
+        this.userName = User.CURRENT_USER.getUserName();
+        this.status = status;
+        this.signal = signal;
     }
 
     public Message(Server server, String message, Signal signal, String userName, Status status) {

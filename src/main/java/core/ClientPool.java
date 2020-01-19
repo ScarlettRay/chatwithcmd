@@ -1,7 +1,9 @@
 package core;
 
+import common.Message;
 import common.Server;
 import net.MyChatClient;
+import util.Result;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +61,20 @@ public class ClientPool {
             }
         }
         return addClient(server);
+    }
+
+    /**
+     * 批量发送消息
+     * @param servers
+     * @param message
+     * @return
+     */
+    public static Result batchSendRequired(List<Server> servers, Message message){
+        for(Server tmpServer : servers){
+            MyChatClient client = getClientFromPoolRequired(tmpServer);
+            client.sendMessage(message);
+        }
+        return Result.OK;
     }
 
 }

@@ -1,6 +1,7 @@
 package core;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import common.*;
 import util.Constants;
 import util.IOUtil;
@@ -61,6 +62,7 @@ public enum Operation {
     /**
      * 加入聊天室的请求
      * 在聊天室Chatroom加入参与者的马甲和ip
+     * 向新加入的参与者发送确认的马甲
      */
     ATTEND(Signal.ATTEND){
         @Override
@@ -68,24 +70,25 @@ public enum Operation {
             String userName = message.getUserName();
             int index = 2;
             //设置名称
-            while (ChatRoom.CHAT_ROOM.addNickName(userName)){
+            while (ChatRoom.CHAT_ROOM.hasNickName(userName)){
                 userName += index;
             }
             //设置ip
-            ChatRoom.CHAT_ROOM.addIp(new Server(message.getServer().getIp()));
-            return new MessageWrapper(new Message(userName,Signal.ALLOW),ChatRoom.CHAT_ROOM.getServers());
+            ChatRoom.CHAT_ROOM.addUser(new User(message.getServer(),userName));
+            return new MessageWrapper(new Message(userName,Signal.ALLOW),message.getServer());
         }
     },
     /**
      * 允许加入的请求
      * 将返回来的信息加入本地的聊天室里边
+     * 向管理员发送确认信息
      */
     ALLOW(Signal.ALLOW){
         @Override
         public MessageWrapper deal(Message message) {
             String nickName = message.getUserName();
-            ChatRoom.CHAT_ROOM.setMyName(nickName);
-            ChatRoom.CHAT_ROOM.addIp(User.CURRENT_USER.getServer());
+            User.CURRENT_USER.setUserName(nickName);
+            ChatRoom.CHAT_ROOM.addUser(User.CURRENT_USER);
             ChatRoom.CHAT_ROOM.setMasterServer(message.getServer());
             return new MessageWrapper(new Message(Status.OK,Signal.ACK),message.getServer());
         }
@@ -97,7 +100,21 @@ public enum Operation {
     ACK(Signal.ACK){
         @Override
         public MessageWrapper deal(Message message) {
-
+            User newUser = new User(message.getServer(),message.getUserName());
+            Message mes = new Message(JSONObject.toJSONString(newUser),Signal.NEW);
+            return new MessageWrapper(mes,ChatRoom.CHAT_ROOM.getUsers());
+        }
+    },
+    /**
+     * 新成员信息
+     *
+     */
+    NEW(Signal.NEW){
+        @Override
+        public MessageWrapper deal(Message message) {
+            User newUser = JSONObject.parseObject(message.getMessage(),User.class);
+            ChatRoom.CHAT_ROOM.addUser(newUser);
+            return new MessageWrapper(new Message(Status.OK,Signal.SUC),message.getServer());
         }
     };
 

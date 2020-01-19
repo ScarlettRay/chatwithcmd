@@ -1,6 +1,7 @@
 package core;
 
 import com.alibaba.fastjson.JSON;
+import common.MessageWrapper;
 import lombok.extern.slf4j.Slf4j;
 import common.Message;
 
@@ -49,8 +50,8 @@ public class NewUserListener implements Runnable{
                 if(false)//if (message.getIp().equals(User.CURRENT_USER.getIp())) TODO 多机环境请修改此处
                     continue; // 忽略自身
                 if (message.getSignal().equals(Signal.DETECT)) { //是探测信息
-                    Message re = Operation.DETECT.deal(message);
-                    ClientPool.getClientFromPoolRequired(message.getServer()).sendMessage(re);
+                    MessageWrapper re = Operation.DETECT.deal(message);
+                    ClientPool.batchSendRequired(re.getServers(),re.getMessage());
                 }
             } catch (IOException e) {
                 e.printStackTrace();

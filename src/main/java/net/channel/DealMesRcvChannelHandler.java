@@ -2,6 +2,9 @@ package net.channel;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import common.MessageWrapper;
+import common.User;
+import core.ClientPool;
 import core.Operation;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -36,13 +39,21 @@ public class DealMesRcvChannelHandler extends SimpleChannelInboundHandler<ByteBu
         super.channelRead(ctx, msg);
         Message message = JSONObject.parseObject(msg.toString(), Message.class);
         Operation op = Operation.valueOf(message.getSignal().toString());
-        Message re = op.deal(message);
-        String reStr = JSON.toJSONString(re) + "\r\n";
-        if(re != null){
-            //回写数据
-            ByteBuf buf = Unpooled.buffer();
-            buf.writeBytes(reStr.getBytes());
-            ctx.channel().writeAndFlush(buf);
+        MessageWrapper re = op.deal(message);
+        //有些消息是要返回给整个聊天室的成员的或者其他成员的，需要区分
+        if(re.getServers().size() == 1 && re.getServers().get(0).equals(User.CURRENT_USER.getServer())){
+            //直接回写
+            if(re.getMessage() != null){
+                String reStr = JSON.toJSONString(re.getMessage()) + "\r\n";
+                //回写数据
+                ByteBuf buf = Unpooled.buffer();
+                buf.writeBytes(reStr.getBytes());
+                ctx.channel().writeAndFlush(buf);
+            }
+        }else{
+            //批量发送
+            ClientPool.batchSendRequired(re.getServers(),re.getMessage());
         }
+
     }
 }
