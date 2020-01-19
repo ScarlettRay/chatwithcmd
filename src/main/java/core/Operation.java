@@ -1,12 +1,9 @@
 package core;
 
 import com.alibaba.fastjson.JSON;
-import common.LatchContainer;
-import common.MessageWrapper;
-import common.User;
+import common.*;
 import util.Constants;
 import util.IOUtil;
-import common.Message;
 import util.Status;
 
 /**
@@ -49,7 +46,7 @@ public enum Operation {
         @Override
         public MessageWrapper deal(Message message) {
             IOUtil.output(message);
-            return new Message(Status.OK,Signal.SUC);
+            return new MessageWrapper(new Message(Status.OK,Signal.SUC),message.getServer());
         }
     },
     /**
@@ -75,8 +72,8 @@ public enum Operation {
                 userName += index;
             }
             //设置ip
-            ChatRoom.CHAT_ROOM.addIp(message.getServer().getIp());
-            return new Message(userName,Signal.ALLOW);
+            ChatRoom.CHAT_ROOM.addIp(new Server(message.getServer().getIp()));
+            return new MessageWrapper(new Message(userName,Signal.ALLOW),ChatRoom.CHAT_ROOM.getServers());
         }
     },
     /**
@@ -88,9 +85,9 @@ public enum Operation {
         public MessageWrapper deal(Message message) {
             String nickName = message.getUserName();
             ChatRoom.CHAT_ROOM.setMyName(nickName);
-            ChatRoom.CHAT_ROOM.addIp(User.CURRENT_USER.getIp());
-            ChatRoom.CHAT_ROOM.setMasterIp(message.getServer().getIp());
-            return new Message(Status.OK,Signal.ACK);
+            ChatRoom.CHAT_ROOM.addIp(User.CURRENT_USER.getServer());
+            ChatRoom.CHAT_ROOM.setMasterServer(message.getServer());
+            return new MessageWrapper(new Message(Status.OK,Signal.ACK),message.getServer());
         }
     },
     /**

@@ -24,6 +24,11 @@ public class Server {
         this.port = port;
     }
 
+    public Server(String ip){
+        this.ip = ip;
+        this.port = 10234;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

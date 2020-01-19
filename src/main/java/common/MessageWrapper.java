@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Ray
@@ -19,5 +20,10 @@ public class MessageWrapper {
     public MessageWrapper(Message message,Server server){
         this.message = message;
         this.servers.add(server);
+    }
+
+    public MessageWrapper(Message message, Set<Server> servers){
+        this.message = message;
+        this.servers.addAll(servers);
     }
 }
