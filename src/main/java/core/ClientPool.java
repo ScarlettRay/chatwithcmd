@@ -2,11 +2,13 @@ package core;
 
 import common.Message;
 import common.Server;
+import common.User;
 import net.MyChatClient;
 import util.Result;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Ray
@@ -72,6 +74,21 @@ public class ClientPool {
     public static Result batchSendRequired(List<Server> servers, Message message){
         for(Server tmpServer : servers){
             MyChatClient client = getClientFromPoolRequired(tmpServer);
+            client.sendMessage(message);
+        }
+        return Result.OK;
+    }
+
+    /**
+     * 根据User批量发送
+     * @param users
+     * @param message
+     * @return
+     */
+    public static Result batchSendRequiredByUser(List<User> users, Message message){
+        for (User user : users) {
+            Server server = user.getServer();
+            MyChatClient client = getClientFromPoolRequired(server);
             client.sendMessage(message);
         }
         return Result.OK;

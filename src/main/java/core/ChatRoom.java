@@ -5,8 +5,8 @@ import common.User;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.lang.reflect.Array;
+import java.util.*;
 
 /**
  * @author Ray
@@ -17,7 +17,7 @@ import java.util.Set;
 @Slf4j
 public class ChatRoom {
 
-    private Set<User> users = new HashSet<>();//聊天室内所有成员
+    private List<User> users = new ArrayList<>();//聊天室内所有成员
 
     private Server masterServer;
 
@@ -39,6 +39,22 @@ public class ChatRoom {
         for(User tmpUser : users){
             if(nickName.equals(tmpUser.getUserName())){
                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 通过ip删除房间里的用户
+     * @return
+     */
+    public boolean removeUserByIp(String ip){
+        Iterator<User> its = users.iterator();
+        while(its.hasNext()){
+            User user = its.next();
+            if(user.getServer().getIp().equals(ip)){
+                its.remove();
+                return true;
             }
         }
         return false;

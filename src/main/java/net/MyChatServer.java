@@ -68,8 +68,6 @@ public class MyChatServer {
                     //p.addLast("http-chunked", new ChunkedWriteHandler());
                     //请求处理
                     p.addLast("dealMesHandle", new DealMesRcvChannelHandler());
-                    //发送处理
-                    //p.addLast("ackMesHandle", new AckMesChannelHandler());
                 }
             });
             //同步，等待子线程任务返回

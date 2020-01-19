@@ -3,9 +3,12 @@ package core;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import common.*;
+import io.netty.handler.codec.json.JsonObjectDecoder;
 import util.Constants;
 import util.IOUtil;
 import util.Status;
+
+import java.nio.charset.Charset;
 
 /**
  * @author Ray
@@ -114,6 +117,19 @@ public enum Operation {
         public MessageWrapper deal(Message message) {
             User newUser = JSONObject.parseObject(message.getMessage(),User.class);
             ChatRoom.CHAT_ROOM.addUser(newUser);
+            return new MessageWrapper(new Message(Status.OK,Signal.SUC),message.getServer());
+        }
+    },
+    /**
+     * 移除了用户之后的房间信息共享
+     * 返回更新成功的信息
+     */
+    REMOVE(Signal.REMOVE){
+        @Override
+        public MessageWrapper deal(Message message){
+            ChatRoom chatRoom = JSONObject.parseObject(message.getMessage(),ChatRoom.class);
+            ChatRoom.CHAT_ROOM.setMasterServer(chatRoom.getMasterServer());
+            ChatRoom.CHAT_ROOM.setUsers(chatRoom.getUsers());
             return new MessageWrapper(new Message(Status.OK,Signal.SUC),message.getServer());
         }
     };

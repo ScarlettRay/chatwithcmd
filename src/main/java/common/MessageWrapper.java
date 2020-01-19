@@ -22,7 +22,7 @@ public class MessageWrapper {
         this.servers.add(server);
     }
 
-    public MessageWrapper(Message message, Set<User> users){
+    public MessageWrapper(Message message, List<User> users){
         this.message = message;
         users.forEach(e->servers.add(e.getServer()));
     }
