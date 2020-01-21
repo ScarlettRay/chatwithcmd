@@ -24,6 +24,7 @@ public class IOUtil {
         do{
             System.out.print(tip + ":");
             str = sc.nextLine();
+            str = str.replace(tip+":","");
         }while (str == null || "".equals(str));
         return str;
     }

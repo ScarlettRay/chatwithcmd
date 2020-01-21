@@ -47,9 +47,9 @@ public class NewUserListener implements Runnable{
                         inPacket.getLength());
                 Message message = JSON.parseObject(messageStr,Message.class);
 
-                if(message.getServer().getIp().equals(User.CURRENT_USER.getIp()))
+                if(false)//(message.getServer().getIp().equals(User.CURRENT_USER.getIp()))
                     continue; // 忽略自身
-                if (message.getSignal().equals(Signal.DETECT)) { //是探测信息
+                if(message.getSignal().equals(Signal.DETECT)) { //是探测信息
                     MessageWrapper re = Operation.DETECT.deal(message);
                     ClientPool.batchSendRequired(re.getServers(),re.getMessage());
                 }
