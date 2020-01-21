@@ -23,11 +23,12 @@ del /Q ..\logs\*
 if ""%1"" == ""debug"" goto debug
 
 ::%java_exe% -Xms512m -Xmx1024m %JAVA_OPTS% -classpath ..\conf;target\test-classes\UDPTest
-java target.classes.Main
+java -classpath .\bin;.\bin\* DebuggerMain
+::java -jar ChatWithCmd-1.0-SNAPSHOT.jar
 goto end
 
 :debug
-%java_exe% -Xms512m -Xmx1024m -Xdebug -Xnoagent %JAVA_OPTS% -Djava.compiler=NONE -Dfile.encoding=utf-8 -Xrunjdwp:transport=dt_socket,address=8001,server=y,suspend=n -classpath ..\conf;target\test-classes\UDPTest
+%java_exe% -Xms512m -Xmx1024m -Xdebug -Xnoagent %JAVA_OPTS% -Djava.compiler=NONE -Dfile.encoding=utf-8 -Xrunjdwp:transport=dt_socket,address=8001,server=y,suspend=n -classpath ..\conf;Main
 goto end
 
 :end

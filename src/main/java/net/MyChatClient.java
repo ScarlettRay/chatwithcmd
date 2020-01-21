@@ -6,7 +6,6 @@ import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
-import net.channel.ClientTestHandler;
 import net.channel.DealMesRcvChannelHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
@@ -82,7 +81,6 @@ public class MyChatClient {
                         Integer.MAX_VALUE, Delimiters.lineDelimiter()[0]));
                 //找到他的管道 增加他的handler
                 ch.pipeline().addLast("deal-mes-rcv",new DealMesRcvChannelHandler());
-                ch.pipeline().addLast("client-test",new ClientTestHandler());
             }
         });
 

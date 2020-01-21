@@ -22,7 +22,7 @@ public class IOUtil {
     public static String input(String tip){
         String str = null;
         do{
-            log.info(tip + ":");
+            System.out.print(tip + ":");
             str = sc.nextLine();
         }while (str == null || "".equals(str));
         return str;

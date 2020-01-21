@@ -2,6 +2,7 @@ package core;
 
 import com.alibaba.fastjson.JSON;
 import common.MessageWrapper;
+import common.User;
 import lombok.extern.slf4j.Slf4j;
 import common.Message;
 
@@ -46,7 +47,7 @@ public class NewUserListener implements Runnable{
                         inPacket.getLength());
                 Message message = JSON.parseObject(messageStr,Message.class);
 
-                if(false)//if (message.getIp().equals(User.CURRENT_USER.getIp())) TODO 多机环境请修改此处
+                if(message.getServer().getIp().equals(User.CURRENT_USER.getIp()))
                     continue; // 忽略自身
                 if (message.getSignal().equals(Signal.DETECT)) { //是探测信息
                     MessageWrapper re = Operation.DETECT.deal(message);
