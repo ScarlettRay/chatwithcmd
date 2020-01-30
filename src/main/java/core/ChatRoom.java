@@ -5,8 +5,9 @@ import common.User;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
-import java.lang.reflect.Array;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author Ray
@@ -48,11 +49,11 @@ public class ChatRoom {
      * 通过ip删除房间里的用户
      * @return
      */
-    public boolean removeUserByIp(String ip){
+    public boolean removeUserByServer(Server server){
         Iterator<User> its = users.iterator();
         while(its.hasNext()){
             User user = its.next();
-            if(user.getServer().getIp().equals(ip)){
+            if(user.getServer().equals(server)){
                 its.remove();
                 return true;
             }

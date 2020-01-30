@@ -63,8 +63,8 @@ public class MyChatClient {
         client = new Bootstrap();
 
         //第1步 定义线程组，处理读写和链接事件，没有了accept事件
-        EventLoopGroup group = new NioEventLoopGroup();
-        client.group(group );
+        group = new NioEventLoopGroup();
+        client.group(group);
 
         //第2步 绑定客户端通道
         client.channel(NioSocketChannel.class);
@@ -96,7 +96,7 @@ public class MyChatClient {
             try {
                 future = client.connect(server.getIp(), server.getPort()).sync();
             } catch (InterruptedException e) {
-                log.error("连接服务器出现异常！" + e.getMessage());
+                log.debug("连接服务器出现异常！" + e.getMessage());
                 e.printStackTrace();
             }
 
@@ -104,10 +104,10 @@ public class MyChatClient {
                 //当通道关闭了，就继续往下走
                 future.channel().closeFuture().sync();
             } catch (InterruptedException e) {
-                log.error("连接断开出现异常"+ e.getMessage());
+                log.debug("连接断开出现异常"+ e.getMessage());
                 e.printStackTrace();
             }finally {
-                log.info("连接断开完成!");
+                log.debug("连接断开完成!");
                 group.shutdownGracefully();
             }
         }

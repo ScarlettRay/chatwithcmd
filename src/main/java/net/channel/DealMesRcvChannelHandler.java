@@ -3,6 +3,7 @@ package net.channel;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import common.MessageWrapper;
+import common.Server;
 import common.User;
 import core.*;
 import io.netty.buffer.ByteBuf;
@@ -72,10 +73,10 @@ public class DealMesRcvChannelHandler extends SimpleChannelInboundHandler<ByteBu
         super.handlerRemoved(ctx);
         ChatRoom.CHAT_ROOM.getMasterServer();
         InetSocketAddress ipSocket = (InetSocketAddress)ctx.channel().remoteAddress();
-        String clientIp = ipSocket.getAddress().getHostAddress();
-        if(ChatRoom.CHAT_ROOM.getMasterServer().getIp().equals(clientIp)){
+        Server unconnectedServer = new Server(ipSocket.getAddress().getHostAddress(),null,ipSocket.getPort());
+        if(ChatRoom.CHAT_ROOM.getMasterServer().equals(unconnectedServer)){
             //是管理员，重新选举 TODO 选举结果还需要进行各个客户端之间的同步吗，还是直接依赖ChatRoom里面的user顺序，这样可靠吗
-            ChatRoom.CHAT_ROOM.removeUserByIp(clientIp);
+            ChatRoom.CHAT_ROOM.removeUserByServer(unconnectedServer);
             User master = ChatRoom.CHAT_ROOM.getUsers().get(0);//只要自己没退出，总会有一个，不用判断数组越界
             //判断是不是自己
             if(master.getServer().equals(User.CURRENT_USER.getServer())){
@@ -85,14 +86,14 @@ public class DealMesRcvChannelHandler extends SimpleChannelInboundHandler<ByteBu
         }else{
             if(CmdChatMachine.CMD_CHAT_MACHINE.isMaster()){
                 //移除用户
-                ChatRoom.CHAT_ROOM.removeUserByIp(clientIp);
+                ChatRoom.CHAT_ROOM.removeUserByServer(unconnectedServer);
                 //向成员同步房间信息
                 Message message = new Message(Status.OK, Signal.REMOVE);
                 message.setMessage(JSON.toJSONString(ChatRoom.CHAT_ROOM));
                 ClientPool.batchSendRequiredByUser(ChatRoom.CHAT_ROOM.getUsers(),message);
             }else{
                 //移除用户
-                ChatRoom.CHAT_ROOM.removeUserByIp(clientIp);
+                ChatRoom.CHAT_ROOM.removeUserByServer(unconnectedServer);
             }
         }
     }
