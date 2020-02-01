@@ -4,6 +4,7 @@ import common.User;
 import core.ChatRoom;
 import core.ClientPool;
 import core.CmdChatMachine;
+import core.NewUserListener;
 import lombok.extern.slf4j.Slf4j;
 import net.MyChatServer;
 import util.Constants;
@@ -35,6 +36,8 @@ public class DebuggerMain {
             log.info("已为你开通一个新的聊天室...");
             String input = IOUtil.input(Constants.NICK_NAME_TIP);
             User.CURRENT_USER.setUserName(input);
+            //开启监听器
+            new Thread(new NewUserListener()).start();
             log.info("等待其他成员的加入...");
         }else{
             try {
@@ -44,7 +47,7 @@ public class DebuggerMain {
             }
         }
         while(true){
-            String mes = IOUtil.input("$");
+            String mes = IOUtil.input("");
             ClientPool.sendMessageInChatRoom(Message.buildUserMessage(mes));
         }
     }

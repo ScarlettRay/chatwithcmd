@@ -22,11 +22,11 @@ public class ChatRoom {
 
     private Server masterServer;
 
-    private static final User currentUser = User.CURRENT_USER;//我的信息
+    private final static User currentUser = User.CURRENT_USER;//我的信息
+
+    public final static ChatRoom CHAT_ROOM = new ChatRoom();
 
     private ChatRoom(){}
-
-    public static ChatRoom CHAT_ROOM = new ChatRoom();
 
     /**
      * 加入新的IP
@@ -49,16 +49,33 @@ public class ChatRoom {
      * 通过ip删除房间里的用户
      * @return
      */
-    public boolean removeUserByServer(Server server){
+    public void removeUserByAdress(String adress){
         Iterator<User> its = users.iterator();
         while(its.hasNext()){
             User user = its.next();
-            if(user.getServer().equals(server)){
+            if(user.getServer().getIp().equals(adress)){
                 its.remove();
-                return true;
+                break;
             }
         }
-        return false;
     }
 
+    /**
+     * 去掉自己和指定user的聊天室内成员列表
+     * @param user
+     */
+    public List<User> getUsersByCondition(User user){
+        List<User> localUsers = new ArrayList<>(users);
+        localUsers.remove(currentUser);
+        localUsers.remove(user);
+        return localUsers;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setMasterServer(Server masterServer) {
+        this.masterServer = masterServer;
+    }
 }

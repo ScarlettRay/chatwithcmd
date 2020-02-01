@@ -1,3 +1,4 @@
+import common.LatchContainer;
 import common.Message;
 import common.User;
 import core.ChatRoom;
@@ -37,9 +38,15 @@ public class Main {
             //开启监听器
             new Thread(new NewUserListener()).start();
             log.info("等待其他成员的加入...");
+        }else{
+            try {
+                LatchContainer.PREPARE_LATCH.await();
+            } catch (InterruptedException e) {
+                Thread.interrupted();
+            }
         }
         while(true){
-            String mes = IOUtil.input("$");
+            String mes = IOUtil.input("");
             ClientPool.sendMessageInChatRoom(Message.buildUserMessage(mes));
         }
     }

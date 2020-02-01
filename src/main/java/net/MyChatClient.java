@@ -118,6 +118,14 @@ public class MyChatClient {
         return Result.OK;
     }
 
+    /**
+     * 是否已经关闭
+     * @return
+     */
+    public boolean isClosed(){
+        return !future.channel().isActive();
+    }
+
     public Server getServer(){
         return server;
     }

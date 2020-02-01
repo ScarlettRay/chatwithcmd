@@ -6,9 +6,7 @@ import common.User;
 import net.MyChatClient;
 import util.Result;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Ray
@@ -20,7 +18,7 @@ import java.util.Set;
  */
 public class ClientPool {
 
-    public static List<MyChatClient> CLIENT_POOL = new ArrayList<>();
+    private static Map<Server,MyChatClient> CLIENTMAP = new HashMap<>();
 
     /**
      *从连接池中获取与指定服务器的连接，没有则返回null;
@@ -28,12 +26,7 @@ public class ClientPool {
      * @return
      */
     public static MyChatClient getClientFromPool(Server server){
-        for (MyChatClient e : CLIENT_POOL) {
-            if (server.equals(e.getServer())) {
-                return e;
-            }
-        }
-        return null;
+        return CLIENTMAP.get(server);
     }
 
 
@@ -42,13 +35,9 @@ public class ClientPool {
      * @param server
      */
     public static MyChatClient addClient(Server server){
-        if(getClientFromPool(server) == null){
-            MyChatClient client = MyChatClient.buildClient(server);
-            CLIENT_POOL.add(client);
-            return client;
-        }else{
-            throw new RuntimeException("连接池中已存在相同的客户端与服务端的连接！");
-        }
+        MyChatClient client = MyChatClient.buildClient(server);
+        CLIENTMAP.put(server,client);
+        return client;
     }
 
     /**
@@ -57,12 +46,15 @@ public class ClientPool {
      * @return
      */
     public  static MyChatClient getClientFromPoolRequired(Server server){
-        for (MyChatClient e : CLIENT_POOL) {
-            if (server.equals(e.getServer())) {
-                return e;
-            }
+        MyChatClient client = CLIENTMAP.get(server);
+        if(client == null ){
+            return addClient(server);
+        }else if(client.isClosed()){
+            CLIENTMAP.remove(server);
+            return addClient(server);
+        }else{
+            return client;
         }
-        return addClient(server);
     }
 
     /**
@@ -100,10 +92,23 @@ public class ClientPool {
      * @return
      */
     public static Result sendMessageInChatRoom(Message message){
-        for (MyChatClient client : CLIENT_POOL) {
-            client.sendMessage(message);
-        }
+        CLIENTMAP.entrySet().forEach(e->e.getValue().sendMessage(message));
         return Result.OK;
+    }
+
+    /**
+     * 根据用户移除链接
+     * @param adress
+     */
+    public static void removeClientByAdress(String adress){
+        Server goalServer = null;
+        for (Map.Entry<Server, MyChatClient> entry : CLIENTMAP.entrySet()) {
+            if(entry.getKey().getIp().equals(adress)){
+                goalServer = entry.getKey();
+                break;
+            }
+        }
+        CLIENTMAP.remove(goalServer);
     }
 
 }

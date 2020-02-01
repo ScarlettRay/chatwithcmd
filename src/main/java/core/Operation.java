@@ -2,16 +2,23 @@ package core;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import common.*;
+import common.LatchContainer;
+import common.Message;
+import common.MessageWrapper;
+import common.User;
+import lombok.extern.slf4j.Slf4j;
 import util.Constants;
 import util.IOUtil;
 import util.Status;
+
+import java.util.List;
 
 /**
  * @author Ray
  * @create 2019-12-25 14:51:36
  * <p>接受请求操作处理类
  */
+@Slf4j
 public enum Operation {
 
     /**
@@ -71,7 +78,7 @@ public enum Operation {
             int index = 2;
             //设置名称
             while (ChatRoom.CHAT_ROOM.hasNickName(userName)){
-                userName += index;
+                userName = userName + index;
             }
             //设置ip
             ChatRoom.CHAT_ROOM.addUser(new User(message.getServer(),userName));
@@ -90,6 +97,7 @@ public enum Operation {
             User.CURRENT_USER.setUserName(nickName);
             ChatRoom.CHAT_ROOM.addUser(User.CURRENT_USER);
             ChatRoom.CHAT_ROOM.setMasterServer(message.getServer());
+            log.info("设置新的管理员：" + message.getServer());
             //允许主线程进入下一个输入消息阶段
             LatchContainer.PREPARE_LATCH.countDown();
             return new MessageWrapper(new Message(Status.OK,Signal.ACK),message.getServer());
@@ -104,7 +112,8 @@ public enum Operation {
         public MessageWrapper deal(Message message) {
             User newUser = new User(message.getServer(),message.getUserName());
             Message mes = new Message(JSONObject.toJSONString(newUser),Signal.NEW);
-            return new MessageWrapper(mes,ChatRoom.CHAT_ROOM.getUsers());
+            List<User> userList = ChatRoom.CHAT_ROOM.getUsersByCondition(newUser);
+            return new MessageWrapper(mes,userList);//TODO 去掉自己和新加入的那位
         }
     },
     /**
@@ -116,6 +125,7 @@ public enum Operation {
         public MessageWrapper deal(Message message) {
             User newUser = JSONObject.parseObject(message.getMessage(),User.class);
             ChatRoom.CHAT_ROOM.addUser(newUser);
+            ClientPool.addClient(newUser.getServer());
             return new MessageWrapper(new Message(Status.OK,Signal.SUC),message.getServer());
         }
     },

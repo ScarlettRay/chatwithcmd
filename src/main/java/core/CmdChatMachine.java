@@ -7,7 +7,6 @@ import util.MessageStatus;
 import util.Result;
 import util.Status;
 
-import java.net.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -56,6 +55,7 @@ public class CmdChatMachine implements ChatMachine{
             try {
                 LatchContainer.INVITE_LATCH.await(5,TimeUnit.SECONDS);
             } catch (InterruptedException e) {
+                log.info("a:"+e.getMessage());
                 Thread.interrupted();
             }
             if(CMD_CHAT_MACHINE.isJoin){

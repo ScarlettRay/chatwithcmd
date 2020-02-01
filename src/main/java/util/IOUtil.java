@@ -22,9 +22,9 @@ public class IOUtil {
     public static String input(String tip){
         String str = null;
         do{
-            System.out.print(tip + ":");
+            System.out.print(tip + ">");
             str = sc.nextLine();
-            str = str.replace(tip+":","");
+            str = str.replace(tip+">","");
         }while (str == null || "".equals(str));
         return str;
     }
@@ -35,5 +35,6 @@ public class IOUtil {
      */
     public static void output(Message message){
         log.info(message.getUserName() + ":" + message.getMessage());
+        System.out.print(">");
     }
 }
