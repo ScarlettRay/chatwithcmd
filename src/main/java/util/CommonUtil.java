@@ -11,7 +11,7 @@ import core.ClientPool;
 public class CommonUtil {
 
     public static void removeUserByAdress(String unconnectedAdress){
-        ChatRoom.CHAT_ROOM.removeUserByAdress(unconnectedAdress);
-        ClientPool.removeClientByAdress(unconnectedAdress);
+        ChatRoom.CHAT_ROOM.removeUserByAdress(unconnectedAdress);//移除用户
+        ClientPool.removeClientByAdress(unconnectedAdress);//移除链接
     }
 }

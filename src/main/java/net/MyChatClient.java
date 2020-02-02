@@ -13,6 +13,8 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import lombok.extern.slf4j.Slf4j;
 import common.Message;
+import net.channel.ExceptionsChannelHandler;
+import net.channel.RemoveClientChannelHandler;
 import util.Result;
 
 import java.nio.charset.StandardCharsets;
@@ -73,14 +75,17 @@ public class MyChatClient {
         client.handler(new ChannelInitializer<NioSocketChannel>() {  //通道是NioSocketChannel
             @Override
             protected void initChannel(NioSocketChannel ch){
+                ChannelPipeline p = ch.pipeline();
                 //字符串编码器，一定要加在SimpleClientHandler 的上面
                 //ch.pipeline().addLast("http-codec", new HttpServerCodec());
-                ch.pipeline().addLast("string-encoder",new StringEncoder(StandardCharsets.UTF_8));
-                ch.pipeline().addLast("string-decoder",new StringDecoder(StandardCharsets.UTF_8));
-                ch.pipeline().addLast(new DelimiterBasedFrameDecoder(
+                p.addLast("string-encoder",new StringEncoder(StandardCharsets.UTF_8));
+                p.addLast("string-decoder",new StringDecoder(StandardCharsets.UTF_8));
+                p.addLast(new DelimiterBasedFrameDecoder(
                         Integer.MAX_VALUE, Delimiters.lineDelimiter()[0]));
                 //找到他的管道 增加他的handler
-                ch.pipeline().addLast("deal-mes-rcv",new DealMesRcvChannelHandler());
+                p.addLast("deal-mes-rcv",new DealMesRcvChannelHandler());
+                p.addLast("remove-client-handler",new RemoveClientChannelHandler());
+                p.addLast("exception-handler",new ExceptionsChannelHandler());
             }
         });
 

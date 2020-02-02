@@ -1,23 +1,21 @@
 package net;
 
-import common.Server;
-import io.netty.handler.codec.DelimiterBasedFrameDecoder;
-import io.netty.handler.codec.Delimiters;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
-import net.channel.DealMesRcvChannelHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.DelimiterBasedFrameDecoder;
+import io.netty.handler.codec.Delimiters;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import net.channel.DealMesRcvChannelHandler;
+import net.channel.ExceptionsChannelHandler;
 
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * @author Ray
@@ -74,7 +72,8 @@ public class MyChatServer {
                     //ChunkedWriteHandler分块写处理，文件过大会将内存撑爆
                     //p.addLast("http-chunked", new ChunkedWriteHandler());
                     //请求处理
-                    p.addLast("dealMesHandle", new DealMesRcvChannelHandler());
+                    p.addLast("deal-mes-handler", new DealMesRcvChannelHandler());
+                    p.addLast("exception-handler",new ExceptionsChannelHandler());
                 }
             });
             //同步，等待子线程任务返回
